@@ -11,12 +11,12 @@ export class ApiError extends Error {
 
 export function createErrorResponse(
   error: unknown,
-  defaultMessage = "Internal server error"
+  defaultMessage = "Erro interno do servidor"
 ) {
   if (error && typeof error === "object" && "issues" in error) {
     return Response.json(
       {
-        error: "Validation error",
+        error: "Erro de validação",
         details: error,
       },
       { status: 400 }

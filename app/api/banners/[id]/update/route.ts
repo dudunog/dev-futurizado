@@ -16,7 +16,7 @@ export async function PUT(
     });
 
     if (!existingBanner) {
-      throw new ApiError(404, "Banner not found");
+      throw new ApiError(404, "Banner não encontrado");
     }
 
     const validatedData = updateBannerSchema.parse(body);

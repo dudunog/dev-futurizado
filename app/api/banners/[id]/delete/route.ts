@@ -13,14 +13,14 @@ export async function DELETE(
     });
 
     if (!existingBanner) {
-      throw new ApiError(404, "Banner not found");
+      throw new ApiError(404, "Banner não encontrado");
     }
 
     await prisma.banner.delete({
       where: { id },
     });
 
-    return Response.json({ message: "Banner removed successfully" });
+    return Response.json({ message: "Banner removido com sucesso" });
   } catch (error) {
     return createErrorResponse(error);
   }

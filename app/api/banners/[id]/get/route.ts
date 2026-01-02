@@ -13,7 +13,7 @@ export async function GET(
     });
 
     if (!banner) {
-      throw new ApiError(404, "Banner not found");
+      throw new ApiError(404, "Banner não encontrado");
     }
 
     return Response.json(banner);
