@@ -9,13 +9,13 @@ import { uploadBannerImage } from "@/lib/storage";
 import { Upload, X, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-interface ImageUploadProps {
+type Props = {
   value?: string;
   onChange: (url: string) => void;
   error?: string;
-}
+};
 
-export function ImageUpload({ value, onChange, error }: ImageUploadProps) {
+export function ImageUpload({ value, onChange, error }: Props) {
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [preview, setPreview] = useState<string | null>(value || null);
@@ -27,7 +27,6 @@ export function ImageUpload({ value, onChange, error }: ImageUploadProps) {
       setUploadError(null);
       setIsUploading(true);
 
-      // Create local preview
       const localPreview = URL.createObjectURL(file);
       setPreview(localPreview);
 

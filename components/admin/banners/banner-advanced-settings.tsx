@@ -105,31 +105,6 @@ export function BannerAdvancedSettings<
           </FormItem>
         )}
       />
-
-      <FormField
-        control={control}
-        name={"priority" as Path<TFieldValues>}
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Prioridade</FormLabel>
-            <FormControl>
-              <Input
-                type="number"
-                placeholder="0"
-                {...field}
-                onChange={(e) =>
-                  field.onChange(parseInt(e.target.value, 10) || 0)
-                }
-                value={field.value}
-              />
-            </FormControl>
-            <FormDescription>
-              Banners com maior prioridade aparecem primeiro
-            </FormDescription>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
     </div>
   );
 }
