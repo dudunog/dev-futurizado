@@ -1,6 +1,8 @@
 "use client";
 
 import type { Banner } from "@/app/generated/prisma/client";
+import type { DraggableAttributes } from "@dnd-kit/core";
+import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -9,14 +11,21 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, GripVertical, Trash2 } from "lucide-react";
 
 type BannerCardProps = {
   banner: Banner;
+  attributes: DraggableAttributes;
+  listeners: SyntheticListenerMap | undefined;
   onDelete?: (id: string) => void;
 };
 
-export function BannerCard({ banner, onDelete }: BannerCardProps) {
+export function BannerCard({
+  banner,
+  attributes,
+  listeners,
+  onDelete,
+}: BannerCardProps) {
   const ImageWrapper = banner.clickUrl ? (
     <a
       href={banner.clickUrl}
@@ -60,6 +69,17 @@ export function BannerCard({ banner, onDelete }: BannerCardProps) {
     <Card className="group hover:shadow-md transition-shadow overflow-hidden gap-0 py-0">
       <div className="flex items-center justify-between gap-2 px-3 py-2 bg-muted/50 border-b">
         <div className="flex items-center gap-2 min-w-0 flex-wrap">
+          <div className="shrink-0 cursor-grab active:cursor-grabbing">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-muted-foreground hover:text-foreground  transition-opacity"
+              {...attributes}
+              {...listeners}
+            >
+              <GripVertical className="h-5 w-5" />
+            </Button>
+          </div>
           <Badge className="shrink-0">#{banner.priority}</Badge>
           <span className="text-sm font-medium truncate">
             {banner.targetUrl}

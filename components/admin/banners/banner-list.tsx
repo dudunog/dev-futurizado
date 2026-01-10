@@ -60,19 +60,13 @@ function SortableBannerItem({
       style={style}
       className="relative flex items-start gap-4 group"
     >
-      <div className="shrink-0 pt-6 cursor-grab active:cursor-grabbing">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity"
-          {...attributes}
-          {...listeners}
-        >
-          <GripVertical className="h-5 w-5" />
-        </Button>
-      </div>
       <div className="flex-1 min-w-0">
-        <BannerCard banner={banner} onDelete={onDelete} />
+        <BannerCard
+          banner={banner}
+          onDelete={onDelete}
+          attributes={attributes}
+          listeners={listeners}
+        />
       </div>
     </div>
   );

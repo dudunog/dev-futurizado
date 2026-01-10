@@ -5,7 +5,7 @@ import { BannerForm } from "@/components/admin/banners/banner-form";
 
 import { prisma } from "@/lib/prisma";
 
-type EditBannerPageProps = {
+type Props = {
   params: Promise<{ id: string }>;
 };
 
@@ -21,9 +21,7 @@ async function getBanner(id: string) {
   }
 }
 
-export async function generateMetadata({
-  params,
-}: EditBannerPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const banner = await getBanner(id);
 
@@ -39,7 +37,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function EditBannerPage({ params }: EditBannerPageProps) {
+export default async function EditBannerPage({ params }: Props) {
   const { id } = await params;
   const banner = await getBanner(id);
 
@@ -48,7 +46,7 @@ export default async function EditBannerPage({ params }: EditBannerPageProps) {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4 max-w-7xl">
+    <div className="container mx-auto py-6 px-4 max-w-7xl">
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
