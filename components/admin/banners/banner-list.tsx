@@ -21,10 +21,9 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-import { Button } from "@/components/ui/button";
 import { BannerCard } from "./banner-card";
 
-import { GripVertical } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 type BannerListProps = {
   banners: Banner[];
@@ -77,8 +76,10 @@ export function BannerList({ banners, onReorder, onDelete }: BannerListProps) {
   const [isReordering, setIsReordering] = useState(false);
 
   useEffect(() => {
-    setItems(banners);
-  }, [banners]);
+    if (!isReordering) {
+      setItems(banners);
+    }
+  }, [banners, isReordering]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -94,19 +95,24 @@ export function BannerList({ banners, onReorder, onDelete }: BannerListProps) {
       const oldIndex = items.findIndex((item) => item.id === active.id);
       const newIndex = items.findIndex((item) => item.id === over.id);
 
-      const newItems = arrayMove(items, oldIndex, newIndex);
+      const reorderedItems = arrayMove(items, oldIndex, newIndex);
 
-      const bannersWithPriority = newItems.map((banner, index) => ({
-        id: banner.id,
-        priority: newItems.length - index,
+      const itemsWithNewPriority = reorderedItems.map((banner, index) => ({
+        ...banner,
+        priority: reorderedItems.length - index,
       }));
 
-      setItems(newItems);
+      const bannersWithPriority = itemsWithNewPriority.map((banner) => ({
+        id: banner.id,
+        priority: banner.priority,
+      }));
+
+      setItems(itemsWithNewPriority);
       setIsReordering(true);
 
       try {
         await onReorder(bannersWithPriority);
-      } catch (error) {
+      } catch {
         setItems(banners);
       } finally {
         setIsReordering(false);
@@ -133,7 +139,13 @@ export function BannerList({ banners, onReorder, onDelete }: BannerListProps) {
         items={items.map((banner) => banner.id)}
         strategy={verticalListSortingStrategy}
       >
-        <div className="space-y-4">
+        <div className="space-y-4 relative">
+          {isReordering && (
+            <div className="absolute -top-8 right-0 flex items-center gap-2 text-sm text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span>Salvando...</span>
+            </div>
+          )}
           {items.map((banner) => (
             <SortableBannerItem
               key={banner.id}
@@ -143,11 +155,6 @@ export function BannerList({ banners, onReorder, onDelete }: BannerListProps) {
           ))}
         </div>
       </SortableContext>
-      {isReordering && (
-        <div className="fixed inset-0 bg-background/50 backdrop-blur-sm z-50 flex items-center justify-center">
-          <div className="text-sm text-muted-foreground">Salvando ordem...</div>
-        </div>
-      )}
     </DndContext>
   );
 }

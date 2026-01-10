@@ -1,7 +1,10 @@
 "use client";
 
+import type { Banner } from "@/app/generated/prisma/client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+
 import { BannerList } from "@/components/admin/banners/banner-list";
 import {
   Dialog,
@@ -12,7 +15,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Banner } from "@/app/generated/prisma/client";
 
 type BannerListWrapperProps = {
   initialBanners: Banner[];
@@ -40,16 +42,20 @@ export function BannerListWrapper({ initialBanners }: BannerListWrapperProps) {
         throw new Error("Falha ao atualizar prioridades");
       }
 
-      setBanners((prev) =>
-        prev.map((banner) => {
-          const updated = bannersWithPriority.find((b) => b.id === banner.id);
-          return updated ? { ...banner, priority: updated.priority } : banner;
-        })
-      );
+      setBanners((prev) => {
+        const priorityMap = new Map(
+          bannersWithPriority.map((b) => [b.id, b.priority])
+        );
+        return prev
+          .map((banner) => ({
+            ...banner,
+            priority: priorityMap.get(banner.id) ?? banner.priority,
+          }))
+          .sort((a, b) => b.priority - a.priority);
+      });
 
       router.refresh();
     } catch (error) {
-      console.error("Error reordering banners:", error);
       throw error;
     }
   };
@@ -75,8 +81,7 @@ export function BannerListWrapper({ initialBanners }: BannerListWrapperProps) {
       setDeleteDialogOpen(false);
       setBannerToDelete(null);
       router.refresh();
-    } catch (error) {
-      console.error("Error deleting banner:", error);
+    } catch (_) {
       alert("Erro ao excluir banner. Tente novamente.");
     }
   };

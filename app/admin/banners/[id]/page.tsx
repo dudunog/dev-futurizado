@@ -15,8 +15,7 @@ async function getBanner(id: string) {
       where: { id },
     });
     return banner;
-  } catch (error) {
-    console.error("Error fetching banner:", error);
+  } catch (_) {
     return null;
   }
 }
