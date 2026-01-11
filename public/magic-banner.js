@@ -39,6 +39,16 @@
     }
   }
 
+  function isSafeUrl(url) {
+    if (!url) return false;
+    try {
+      const parsed = new URL(url);
+      return parsed.protocol === "http:" || parsed.protocol === "https:";
+    } catch {
+      return false;
+    }
+  }
+
   function createStyles() {
     const styleId = "magic-banner-styles";
 
@@ -177,7 +187,7 @@
     }
 
     let bannerContent;
-    if (banner.clickUrl) {
+    if (banner.clickUrl && isSafeUrl(banner.clickUrl)) {
       bannerContent = document.createElement("a");
       bannerContent.href = banner.clickUrl;
       bannerContent.target = "_blank";
@@ -187,7 +197,9 @@
     }
 
     const img = document.createElement("img");
-    img.src = banner.imageUrl;
+    if (banner.imageUrl && isSafeUrl(banner.imageUrl)) {
+      img.src = banner.imageUrl;
+    }
     img.alt = banner.imageAlt || "Banner";
     img.loading = "lazy";
 
