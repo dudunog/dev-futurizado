@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 import { BannerListWrapper } from "./banner-list-wrapper";
 import { CreateBannerButton } from "@/components/admin/create-banner-button";

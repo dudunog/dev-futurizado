@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CreateBannerButton } from "@/components/admin/create-banner-button";

@@ -1,4 +1,5 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
+import { Suspense } from "react";
 
 import { LoginForm } from "./login-form";
 
@@ -19,7 +20,9 @@ export default function LoginPage() {
         </div>
 
         <div className="rounded-xl border bg-card p-8 shadow-lg">
-          <LoginForm />
+          <Suspense>
+            <LoginForm />
+          </Suspense>
         </div>
 
         <p className="text-center text-xs text-muted-foreground mt-6">
