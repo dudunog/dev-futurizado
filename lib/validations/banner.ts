@@ -5,9 +5,32 @@ const TIME_FORMAT_REGEX = /^\d{2}:\d{2}:\d{2}$/; // HH:MM:SS format (e.g., 08:00
 const DATE_FORMAT_REGEX = /^\d{4}-\d{2}-\d{2}$/; // YYYY-MM-DD format (e.g., 2026-01-15)
 
 export const createBannerSchema = z.object({
-  targetUrl: z.url({ message: "URL de destino inválida" }),
-  imageUrl: z.url({ message: "URL da imagem inválida" }),
-  imageAlt: z.string().optional(),
+  targetUrl: z
+    .string()
+    .url({ message: "URL de destino inválida" })
+    .refine((val) => {
+      try {
+        const url = new URL(val);
+        return ["http:", "https:"].includes(url.protocol);
+      } catch {
+        return false;
+      }
+    }, "URL deve usar protocolo HTTP ou HTTPS"),
+  imageUrl: z
+    .string()
+    .url({ message: "URL da imagem inválida" })
+    .refine((val) => {
+      try {
+        const url = new URL(val);
+        return ["http:", "https:"].includes(url.protocol);
+      } catch {
+        return false;
+      }
+    }, "URL da imagem deve usar protocolo HTTP ou HTTPS"),
+  imageAlt: z
+    .string()
+    .max(500, "Texto alternativo deve ter menos de 500 caracteres")
+    .optional(),
   startDate: z
     .string()
     .trim()
@@ -48,10 +71,17 @@ export const createBannerSchema = z.object({
   clickUrl: z
     .string()
     .trim()
-    .refine(
-      (val) => val === "" || z.string().url().safeParse(val).success,
-      "URL de destino inválida"
-    )
+    .refine((val) => {
+      if (val === "") return true;
+      const urlCheck = z.string().url().safeParse(val);
+      if (!urlCheck.success) return false;
+      try {
+        const url = new URL(val);
+        return ["http:", "https:"].includes(url.protocol);
+      } catch {
+        return false;
+      }
+    }, "URL de clique deve usar protocolo HTTP ou HTTPS")
     .transform((val) => (val === "" ? undefined : val))
     .optional(),
   displayDuration: z
