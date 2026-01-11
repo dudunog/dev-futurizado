@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teste Magic Banner</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        line-height: 1.6;
+      }
+      h1 {
+        color: #333;
+      }
+      .info {
+        background: #f4f4f4;
+        padding: 15px;
+        border-radius: 5px;
+        margin: 20px 0;
+      }
+      code {
+        background: #e4e4e4;
+        padding: 2px 6px;
+        border-radius: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Teste do Magic Banner</h1>
+
+    <div class="info">
+      <p><strong>URL atual:</strong> <code id="current-url"></code></p>
+      <p>
+        Se você cadastrou um banner para esta URL no painel admin, ele deve
+        aparecer no topo da página.
+      </p>
+    </div>
+
+    <h2>Como testar:</h2>
+    <ol>
+      <li>Certifique-se de que o servidor Next.js está rodando</li>
+      <li>Crie um banner no painel admin com a URL desta página</li>
+      <li>Recarregue esta página</li>
+      <li>O banner deve aparecer no topo automaticamente</li>
+    </ol>
+
+    <!-- In production, use: <script src="https://seu-app.vercel.app/magic-banner.js"></script> -->
+    <script src="/magic-banner.js"></script>
+
+    <script>
+      document.getElementById("current-url").textContent = window.location.href;
+    </script>
+  </body>
+</html>
