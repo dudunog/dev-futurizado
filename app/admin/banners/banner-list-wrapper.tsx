@@ -1,6 +1,6 @@
 "use client";
 
-import type { Banner } from "@/app/generated/prisma/client";
+import type { Banner } from "@/lib/types/banner";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -16,11 +16,11 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-type BannerListWrapperProps = {
+type Props = {
   initialBanners: Banner[];
 };
 
-export function BannerListWrapper({ initialBanners }: BannerListWrapperProps) {
+export function BannerListWrapper({ initialBanners }: Props) {
   const router = useRouter();
   const [banners, setBanners] = useState(initialBanners);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);

@@ -63,6 +63,12 @@ export default async function EditBannerPage({ params }: Props) {
             initialData={{
               ...banner,
               imageAlt: banner.imageAlt ?? undefined,
+              startDate: banner.startDate
+                ? banner.startDate.toISOString().split("T")[0]
+                : undefined,
+              endDate: banner.endDate
+                ? banner.endDate.toISOString().split("T")[0]
+                : undefined,
               startTime: banner.startTime ?? undefined,
               endTime: banner.endTime ?? undefined,
               clickUrl: banner.clickUrl ?? undefined,

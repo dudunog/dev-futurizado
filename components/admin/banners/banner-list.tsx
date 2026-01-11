@@ -1,6 +1,6 @@
 "use client";
 
-import type { Banner } from "@/app/generated/prisma/client";
+import type { Banner } from "@/lib/types/banner";
 
 import { useState, useEffect } from "react";
 import {
@@ -25,7 +25,7 @@ import { BannerCard } from "./banner-card";
 
 import { Loader2 } from "lucide-react";
 
-type BannerListProps = {
+type Props = {
   banners: Banner[];
   onReorder: (banners: { id: string; priority: number }[]) => Promise<void>;
   onDelete?: (id: string) => void;
@@ -71,7 +71,7 @@ function SortableBannerItem({
   );
 }
 
-export function BannerList({ banners, onReorder, onDelete }: BannerListProps) {
+export function BannerList({ banners, onReorder, onDelete }: Props) {
   const [items, setItems] = useState<Banner[]>(banners);
   const [isReordering, setIsReordering] = useState(false);
 
@@ -139,9 +139,9 @@ export function BannerList({ banners, onReorder, onDelete }: BannerListProps) {
         items={items.map((banner) => banner.id)}
         strategy={verticalListSortingStrategy}
       >
-        <div className="space-y-4 relative">
+        <div className="space-y-4">
           {isReordering && (
-            <div className="absolute -top-8 right-0 flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex items-center justify-end gap-2 text-sm text-muted-foreground">
               <Loader2 className="h-4 w-4 animate-spin" />
               <span>Salvando...</span>
             </div>

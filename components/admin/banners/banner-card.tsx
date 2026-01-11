@@ -1,31 +1,27 @@
 "use client";
 
-import type { Banner } from "@/app/generated/prisma/client";
+import type { Banner } from "@/lib/types/banner";
 import type { DraggableAttributes } from "@dnd-kit/core";
 import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 
 import Image from "next/image";
 import Link from "next/link";
 
+import { formatShortDate } from "@/lib/utils/time";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
-import { Edit, GripVertical, Trash2 } from "lucide-react";
+import { Calendar, Clock, Edit, GripVertical, Trash2 } from "lucide-react";
 
-type BannerCardProps = {
+type Props = {
   banner: Banner;
   attributes: DraggableAttributes;
   listeners: SyntheticListenerMap | undefined;
   onDelete?: (id: string) => void;
 };
 
-export function BannerCard({
-  banner,
-  attributes,
-  listeners,
-  onDelete,
-}: BannerCardProps) {
+export function BannerCard({ banner, attributes, listeners, onDelete }: Props) {
   const ImageWrapper = banner.clickUrl ? (
     <a
       href={banner.clickUrl}
@@ -95,9 +91,22 @@ export function BannerCard({
               {banner.animationType}
             </Badge>
           )}
+          {(banner.startDate || banner.endDate) && (
+            <span className="text-xs text-muted-foreground shrink-0 flex items-center gap-1">
+              <Calendar className="h-3 w-3" />
+              {banner.startDate && banner.endDate
+                ? `${formatShortDate(banner.startDate)} - ${formatShortDate(
+                    banner.endDate
+                  )}`
+                : banner.startDate
+                ? `A partir de ${formatShortDate(banner.startDate)}`
+                : `Até ${formatShortDate(banner.endDate)}`}
+            </span>
+          )}
           {banner.startTime && banner.endTime && (
-            <span className="text-xs text-muted-foreground shrink-0">
-              {banner.startTime} - {banner.endTime}
+            <span className="text-xs text-muted-foreground shrink-0 flex items-center gap-1">
+              <Clock className="h-3 w-3" />
+              {banner.startTime.slice(0, 5)} - {banner.endTime.slice(0, 5)}
             </span>
           )}
         </div>

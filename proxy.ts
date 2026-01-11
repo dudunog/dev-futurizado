@@ -41,7 +41,17 @@ export default async function proxy(request: NextRequest) {
 
   const path = request.nextUrl.pathname;
 
-  // Redirect to login if not authenticated
+  const isProtectedApiRoute =
+    path.startsWith("/api/banners") && !path.startsWith("/api/banners/query");
+
+  if (isProtectedApiRoute && !user) {
+    return NextResponse.json(
+      { error: "Unauthorized - Authentication required" },
+      { status: 401 }
+    );
+  }
+
+  // Redirect to login if not authenticated (admin pages)
   if (path.startsWith("/admin") && !user) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
@@ -64,14 +74,6 @@ export default async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public files (images, etc)
-     * - api routes
-     */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$|api/).*)",
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

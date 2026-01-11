@@ -32,46 +32,90 @@ export function BannerDisplaySettings<
     <div className="space-y-4">
       <h2 className="text-lg font-semibold">Configurações de Exibição</h2>
 
-      <div className="grid grid-cols-2 gap-4">
-        <FormField
-          control={control}
-          name={"startTime" as Path<TFieldValues>}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Horário de Início</FormLabel>
-              <FormControl>
-                <Input
-                  type="text"
-                  placeholder="08:00:00"
-                  {...field}
-                  pattern="\d{2}:\d{2}:\d{2}"
-                />
-              </FormControl>
-              <FormDescription>Formato HH:MM:SS</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+      <div className="space-y-2">
+        <h3 className="text-sm font-medium text-muted-foreground">
+          Agendamento por Data
+        </h3>
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={control}
+            name={"startDate" as Path<TFieldValues>}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Data de Início</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} value={field.value || ""} />
+                </FormControl>
+                <FormDescription>Quando o banner começa</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={control}
-          name={"endTime" as Path<TFieldValues>}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Horário de Término</FormLabel>
-              <FormControl>
-                <Input
-                  type="text"
-                  placeholder="12:00:00"
-                  {...field}
-                  pattern="\d{2}:\d{2}:\d{2}"
-                />
-              </FormControl>
-              <FormDescription>Formato HH:MM:SS</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={control}
+            name={"endDate" as Path<TFieldValues>}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Data de Término</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} value={field.value || ""} />
+                </FormControl>
+                <FormDescription>Quando o banner termina</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <h3 className="text-sm font-medium text-muted-foreground">
+          Agendamento por Horário
+        </h3>
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={control}
+            name={"startTime" as Path<TFieldValues>}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Horário de Início</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    placeholder="08:00:00"
+                    {...field}
+                    value={field.value || ""}
+                    pattern="\d{2}:\d{2}:\d{2}"
+                  />
+                </FormControl>
+                <FormDescription>Formato HH:MM:SS</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={control}
+            name={"endTime" as Path<TFieldValues>}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Horário de Término</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    placeholder="12:00:00"
+                    {...field}
+                    value={field.value || ""}
+                    pattern="\d{2}:\d{2}:\d{2}"
+                  />
+                </FormControl>
+                <FormDescription>Formato HH:MM:SS</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
       </div>
 
       <FormField
@@ -99,7 +143,7 @@ export function BannerDisplaySettings<
               </SelectContent>
             </Select>
             <FormDescription>
-              Fuso horário para o horário de exibição
+              Fuso horário para agendamento de data e horário
             </FormDescription>
             <FormMessage />
           </FormItem>

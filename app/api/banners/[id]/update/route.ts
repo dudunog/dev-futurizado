@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { updateBannerSchema } from "@/lib/validations/banner";
 import { ApiError, createErrorResponse } from "@/lib/api/errors";
 import { normalizeUrl } from "@/lib/utils/url";
+import { parseDate } from "@/lib/utils/time";
 
 export async function PUT(
   request: Request,
@@ -21,9 +22,18 @@ export async function PUT(
 
     const validatedData = updateBannerSchema.parse(body);
 
-    const updateData = validatedData.targetUrl
-      ? { ...validatedData, targetUrl: normalizeUrl(validatedData.targetUrl) }
-      : validatedData;
+    const updateData = {
+      ...validatedData,
+      ...(validatedData.targetUrl && {
+        targetUrl: normalizeUrl(validatedData.targetUrl),
+      }),
+      ...(validatedData.startDate !== undefined && {
+        startDate: parseDate(validatedData.startDate),
+      }),
+      ...(validatedData.endDate !== undefined && {
+        endDate: parseDate(validatedData.endDate),
+      }),
+    };
 
     const banner = await prisma.banner.update({
       where: { id },

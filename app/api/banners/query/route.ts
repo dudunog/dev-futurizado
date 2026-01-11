@@ -2,7 +2,13 @@ import { prisma } from "@/lib/prisma";
 import { queryBannerSchema } from "@/lib/validations/banner";
 import { createErrorResponse } from "@/lib/api/errors";
 import { normalizeUrl } from "@/lib/utils/url";
-import { formatTime, isTimeInRange } from "@/lib/utils/time";
+import {
+  formatTime,
+  formatDate,
+  isTimeInRange,
+  isDateInRange,
+  parseDateToString,
+} from "@/lib/utils/time";
 
 export async function GET(request: Request) {
   try {
@@ -26,11 +32,15 @@ export async function GET(request: Request) {
     });
 
     const now = new Date();
+    const currentDate = formatDate(now);
     const currentTime = formatTime(now);
 
     const activeBanners = matchingBanners.filter((banner) => {
-      if (!banner.startTime && !banner.endTime) {
-        return true;
+      const startDateStr = parseDateToString(banner.startDate);
+      const endDateStr = parseDateToString(banner.endDate);
+
+      if (!isDateInRange(currentDate, startDateStr, endDateStr)) {
+        return false;
       }
 
       if (banner.startTime && banner.endTime) {

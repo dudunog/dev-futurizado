@@ -2,10 +2,30 @@ import { z } from "zod";
 
 const TIME_FORMAT_REGEX = /^\d{2}:\d{2}:\d{2}$/; // HH:MM:SS format (e.g., 08:00:00, 12:30:45)
 
+const DATE_FORMAT_REGEX = /^\d{4}-\d{2}-\d{2}$/; // YYYY-MM-DD format (e.g., 2026-01-15)
+
 export const createBannerSchema = z.object({
   targetUrl: z.url({ message: "URL de destino inválida" }),
   imageUrl: z.url({ message: "URL da imagem inválida" }),
   imageAlt: z.string().optional(),
+  startDate: z
+    .string()
+    .trim()
+    .refine(
+      (val) => val === "" || DATE_FORMAT_REGEX.test(val),
+      "Formato inválido. Use YYYY-MM-DD (ex: 2026-01-15)"
+    )
+    .transform((val) => (val === "" ? undefined : val))
+    .optional(),
+  endDate: z
+    .string()
+    .trim()
+    .refine(
+      (val) => val === "" || DATE_FORMAT_REGEX.test(val),
+      "Formato inválido. Use YYYY-MM-DD (ex: 2026-12-31)"
+    )
+    .transform((val) => (val === "" ? undefined : val))
+    .optional(),
   startTime: z
     .string()
     .trim()

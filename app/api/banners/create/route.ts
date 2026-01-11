@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { createBannerSchema } from "@/lib/validations/banner";
 import { createErrorResponse } from "@/lib/api/errors";
 import { normalizeUrl } from "@/lib/utils/url";
+import { parseDate } from "@/lib/utils/time";
 
 export async function POST(request: Request) {
   try {
@@ -15,6 +16,8 @@ export async function POST(request: Request) {
       data: {
         ...validatedData,
         targetUrl: normalizedTargetUrl,
+        startDate: parseDate(validatedData.startDate),
+        endDate: parseDate(validatedData.endDate),
       },
     });
 

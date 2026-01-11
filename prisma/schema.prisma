@@ -14,23 +14,26 @@ datasource db {
 }
 
 model Banner {
-  id              String   @id @default(uuid())
-  targetUrl       String   @map("target_url") @db.Text
-  imageUrl        String   @map("image_url") @db.Text
-  imageAlt        String?  @map("image_alt") @db.Text
-  startTime       String?  @map("start_time")
-  endTime         String?  @map("end_time")
-  timezone        String   @default("UTC") @db.Text
-  isActive        Boolean  @default(true) @map("is_active")
-  clickUrl        String?  @map("click_url") @db.Text
-  displayDuration Int?     @map("display_duration")
-  animationType   String?  @map("animation_type") @db.Text
-  priority        Int      @default(0)
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
+  id              String    @id @default(uuid())
+  targetUrl       String    @map("target_url") @db.Text
+  imageUrl        String    @map("image_url") @db.Text
+  imageAlt        String?   @map("image_alt") @db.Text
+  startDate       DateTime? @map("start_date") @db.Date
+  endDate         DateTime? @map("end_date") @db.Date
+  startTime       String?   @map("start_time")
+  endTime         String?   @map("end_time")
+  timezone        String    @default("UTC") @db.Text
+  isActive        Boolean   @default(true) @map("is_active")
+  clickUrl        String?   @map("click_url") @db.Text
+  displayDuration Int?      @map("display_duration")
+  animationType   String?   @map("animation_type") @db.Text
+  priority        Int       @default(0)
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
 
   @@index([targetUrl], name: "idx_banners_target_url")
   @@index([isActive], name: "idx_banners_active")
+  @@index([startDate, endDate], name: "idx_banners_date")
   @@index([startTime, endTime], name: "idx_banners_time")
   @@index([priority], name: "idx_banners_priority")
   @@map("banners")

@@ -21,13 +21,13 @@ import {
 
 import { Loader2 } from "lucide-react";
 
-type BannerFormProps = {
+type Props = {
   initialData?: Partial<CreateBannerInput>;
   bannerId?: string;
   mode: "create" | "edit";
 };
 
-export function BannerForm({ initialData, bannerId, mode }: BannerFormProps) {
+export function BannerForm({ initialData, bannerId, mode }: Props) {
   const schema = mode === "create" ? createBannerSchema : updateBannerSchema;
   type FormData = z.infer<typeof schema>;
 
@@ -35,6 +35,8 @@ export function BannerForm({ initialData, bannerId, mode }: BannerFormProps) {
     targetUrl: initialData?.targetUrl || "",
     imageUrl: initialData?.imageUrl || "",
     imageAlt: initialData?.imageAlt || "",
+    startDate: initialData?.startDate || "",
+    endDate: initialData?.endDate || "",
     startTime: initialData?.startTime || "",
     endTime: initialData?.endTime || "",
     timezone: initialData?.timezone || "UTC",
