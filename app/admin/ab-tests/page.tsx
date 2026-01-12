@@ -167,7 +167,7 @@ export default async function AbTestsPage() {
                   <div className="mt-4 pt-4 border-t">
                     <Button asChild variant="outline" className="w-full">
                       <Link href={`/admin/ab-tests/${group.id}`}>
-                        Ver Estatísticas Detalhadas
+                        Ver detalhes
                       </Link>
                     </Button>
                   </div>
