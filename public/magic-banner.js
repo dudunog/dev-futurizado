@@ -19,7 +19,94 @@
     apiBaseUrl: getApiBaseUrl(),
     containerId: "magic-banner-container",
     bannerClass: "magic-banner",
+    sessionCookieName: "magic-banner-session",
+    sessionCookieMaxAge: 365 * 24 * 60 * 60, // 1 year
   };
+
+  function getOrCreateSessionId() {
+    const cookieName = CONFIG.sessionCookieName;
+    const cookies = document.cookie.split(";");
+
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.startsWith(cookieName + "=")) {
+        return cookie.substring(cookieName.length + 1);
+      }
+    }
+
+    const sessionId =
+      "session-" +
+      Date.now() +
+      "-" +
+      Math.random().toString(36).substring(2, 15);
+
+    const expires = new Date();
+    expires.setTime(expires.getTime() + CONFIG.sessionCookieMaxAge * 1000);
+    document.cookie =
+      cookieName +
+      "=" +
+      sessionId +
+      ";expires=" +
+      expires.toUTCString() +
+      ";path=/;SameSite=Lax";
+
+    return sessionId;
+  }
+
+  function collectBrowserInfo() {
+    return {
+      userAgent: navigator.userAgent || null,
+      referrer: document.referrer || null,
+    };
+  }
+
+  function registerAnalyticsEvent(bannerId, eventType) {
+    if (!bannerId || !eventType) {
+      console.warn("Analytics: Missing bannerId or eventType", {
+        bannerId,
+        eventType,
+      });
+      return;
+    }
+
+    try {
+      const sessionId = getOrCreateSessionId();
+      const browserInfo = collectBrowserInfo();
+
+      const payload = {
+        bannerId: bannerId,
+        eventType: eventType,
+        sessionId: sessionId || null,
+        userAgent: browserInfo.userAgent || null,
+        referrer: browserInfo.referrer || null,
+      };
+
+      const url = `${CONFIG.apiBaseUrl}/api/banners/analytics`;
+
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+        keepalive: true,
+      })
+        .then(function (response) {
+          if (!response.ok) {
+            console.error(
+              "Analytics error:",
+              response.status,
+              response.statusText
+            );
+          }
+        })
+        .catch(function (error) {
+          console.error("Analytics fetch error:", error);
+        });
+    } catch (error) {
+      console.error("Error registering analytics event:", error);
+    }
+  }
 
   async function fetchBanner(url) {
     try {
@@ -200,6 +287,12 @@
       bannerContent.href = banner.clickUrl;
       bannerContent.target = "_blank";
       bannerContent.rel = "noopener noreferrer";
+
+      bannerContent.addEventListener("click", function () {
+        if (banner.id) {
+          registerAnalyticsEvent(banner.id, "click");
+        }
+      });
     } else {
       bannerContent = document.createElement("div");
     }
@@ -255,6 +348,10 @@
       document.body.style.paddingTop = `${bannerHeight}px`;
     }
 
+    if (banner.id) {
+      registerAnalyticsEvent(banner.id, "impression");
+    }
+
     if (banner.displayDuration && banner.displayDuration > 0) {
       setTimeout(() => {
         removeBanner();
@@ -270,6 +367,9 @@
     const banner = await fetchBanner(currentUrl);
 
     if (banner) {
+      if (!banner.id) {
+        console.warn("Banner received without ID:", banner);
+      }
       displayBanner(banner);
     }
   }
