@@ -61,6 +61,71 @@ A ideia é que qualquer loja possa exibir banners dinâmicos apenas **importando
 
 Se houver um banner cadastrado para aquela URL, ele será exibido automaticamente no topo do site.
 
+🧪 Como testar localmente
+--------------------------
+
+1.  Clone o repositório:
+
+    ```bash
+    git clone https://github.com/dudunog/dev-futurizado.git
+    cd dev-futurizado
+    ```
+
+2.  Instale as dependências:
+
+    ```bash
+    npm install
+    ```
+
+3.  Configure as variáveis de ambiente no arquivo `.env` seguindo o exemplo do arquivo `.env.example`:
+
+    ```env
+    DATABASE_URL="sua-string-de-conexao-postgresql"
+    NEXT_PUBLIC_SUPABASE_URL="sua-url-do-supabase"
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="sua-chave-publica"
+    SUPABASE_SERVICE_ROLE_KEY="sua-chave-de-servico"
+    ```
+
+4.  Execute as migrations do Prisma:
+
+    ```bash
+    npx prisma migrate dev
+    npx prisma generate
+    ```
+
+5.  Inicie o servidor de desenvolvimento:
+
+    ```bash
+    npm run dev
+    ```
+
+6.  Acesse o painel administrativo em `http://localhost:3000/admin` e faça login com seu email.
+
+🧪 Como testar os banners
+-------------------------
+
+1.  Acesse o painel administrativo em `http://localhost:3000/admin` e faça login.
+
+2.  Crie um novo banner:
+
+    *   Clique no botão `+` no canto inferior direita para criar um banner
+    *   Preencha a **URL de destino** (ex: `http://localhost:3000/test-banner.html`)
+    *   Faça upload de uma imagem ou informe uma URL de imagem
+    *   Configure opcionalmente: horário de exibição, data de início/fim, animação, etc.
+    *   Salve o banner
+
+3.  Teste a exibição do banner:
+    *   Abra o arquivo `public/test-banner.html` no navegador ou crie uma página HTML simples
+    *   Adicione o script: `<script src="http://localhost:3000/magic-banner.js"></script>`
+    *   Certifique-se de que a URL da página corresponde à URL cadastrada no banner
+    *   Recarregue a página - o banner deve aparecer no topo automaticamente
+
+4.  Teste funcionalidades avançadas:
+    *   **Agendamento:** Configure data/horário e verifique se o banner aparece apenas no período configurado
+    *   **Prioridade:** Crie múltiplos banners para a mesma URL e ajuste a prioridade via drag-and-drop
+    *   **A/B Testing:** Crie um grupo de teste A/B e associe variantes aos banners
+    *   **Analytics:** Visualize impressões e cliques nas estatísticas de teste A/B
+
 🪄 Exemplo de funcionamento
 ---------------------------
 
@@ -74,32 +139,40 @@ Se houver um banner cadastrado para aquela URL, ele será exibido automaticament
 🧠 Decisões técnicas (preencher pelo candidato)
 -----------------------------------------------
 
-Descreva aqui as principais decisões tomadas durante o desenvolvimento, por exemplo:
+**Stack:** Next.js, Prisma ORM, PostgreSQL, Supabase, shadcn/ui, Tailwind CSS, Zod, React Hook Form.
 
-*   Frameworks e bibliotecas utilizadas
-    
-*   Estratégia de persistência
-    
-*   Estrutura de pastas e componentes
-    
-*   Como foi feita a lógica de exibição condicional dos banners
-    
-*   Desafios encontrados e como foram resolvidos
-    
+**Persistência:** PostgreSQL via Supabase com Prisma ORM. Tabelas separadas para A/B Testing para melhor organização e escalabilidade.
+
+**Arquitetura:** Server Components para páginas admin, API Routes para backend, Client Components apenas quando necessário. Separação entre lógica de negócio (API routes) e apresentação (components).
+
+**Estrutura:** Componentização modular com separação de responsabilidades. Tipos customizados (`lib/types/`) para decoupling do Prisma. Validação centralizada com Zod schemas.
+
+**Script embutível:** Script Vanilla JS sem dependências, auto-inicialização, detecção de origem da API, coleta de analytics.
+
+**Exibição condicional:** Normalização de URLs para matching consistente. Filtros por data/horário/timezone no servidor. Sistema de prioridade. Seleção determinística de variantes A/B baseada em hash de sessionId.
+
+**Autenticação:** Link mágico no Supabase com middleware de proteção de rotas.
+
 
 🌟 Diferenciais implementados (opcional)
 ----------------------------------------
 
 Liste aqui os diferenciais adicionados, como:
 
-*   Upload real de imagem (Supabase Storage)
-    
-*   Autenticação no painel
-    
-*   Efeitos visuais no banner
-    
-*   Preview em tempo real
-    
+*   Upload real de imagem (Supabase Storage) - Implementado
+
+*   Autenticação no painel - Implementado
+
+*   Efeitos visuais no banner - Implementado
+
+*   Preview em tempo real - Implementado
+
+*   Agendamento de banners - Implementado
+
+*   Testes A/B - Implementado
+
+*   Analytics e métricas em tempo real - Implementado
+
 
 🔗 Deploy
 ---------
