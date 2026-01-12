@@ -6,6 +6,8 @@ import { AbTestStatsOverview } from "@/components/admin/ab-tests/ab-test-stats-o
 import { AbTestBestVariant } from "@/components/admin/ab-tests/ab-test-best-variant";
 import { AbTestVariantsComparison } from "@/components/admin/ab-tests/ab-test-variants-comparison";
 
+export const dynamic = "force-dynamic";
+
 type Props = {
   params: Promise<{ testGroupId: string }>;
 };

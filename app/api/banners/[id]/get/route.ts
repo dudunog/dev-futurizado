@@ -10,6 +10,13 @@ export async function GET(
 
     const banner = await prisma.banner.findUnique({
       where: { id },
+      include: {
+        abTestVariant: {
+          include: {
+            testGroup: true,
+          },
+        },
+      },
     });
 
     if (!banner) {

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { BannerForm } from "@/components/admin/banners/banner-form";
 import { BannerAbSettings } from "@/components/admin/banners/banner-ab-settings";
 
-import { prisma } from "@/lib/prisma";
+export const dynamic = "force-dynamic";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -12,18 +12,30 @@ type Props = {
 
 async function getBanner(id: string) {
   try {
-    const banner = await prisma.banner.findUnique({
-      where: { id },
-      include: {
-        abTestVariant: {
-          include: {
-            testGroup: true,
-          },
-        },
+    const baseUrl =
+      process.env.NEXT_PUBLIC_APP_URL ||
+      (process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : "http://localhost:3000");
+
+    const response = await fetch(`${baseUrl}/api/banners/${id}/get`, {
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
       },
     });
-    return banner;
-  } catch (_) {
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        return null;
+      }
+      throw new Error(`Failed to fetch banner: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching banner:", error);
     return null;
   }
 }
@@ -74,10 +86,14 @@ export default async function EditBannerPage({ params }: Props) {
                   ...banner,
                   imageAlt: banner.imageAlt ?? undefined,
                   startDate: banner.startDate
-                    ? banner.startDate.toISOString().split("T")[0]
+                    ? typeof banner.startDate === "string"
+                      ? banner.startDate.split("T")[0]
+                      : new Date(banner.startDate).toISOString().split("T")[0]
                     : undefined,
                   endDate: banner.endDate
-                    ? banner.endDate.toISOString().split("T")[0]
+                    ? typeof banner.endDate === "string"
+                      ? banner.endDate.split("T")[0]
+                      : new Date(banner.endDate).toISOString().split("T")[0]
                     : undefined,
                   startTime: banner.startTime ?? undefined,
                   endTime: banner.endTime ?? undefined,
