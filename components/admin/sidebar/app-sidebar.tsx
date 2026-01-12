@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/sidebar";
 import { UserNav } from "./user-nav";
 
-import { Image, LayoutDashboard, Sparkles } from "lucide-react";
+import { Image, LayoutDashboard, Sparkles, BarChart3 } from "lucide-react";
 
 const menuItems = [
   {
@@ -30,6 +30,11 @@ const menuItems = [
     title: "Banners",
     url: "/admin/banners",
     icon: Image,
+  },
+  {
+    title: "Testes A/B",
+    url: "/admin/ab-tests",
+    icon: BarChart3,
   },
 ];
 

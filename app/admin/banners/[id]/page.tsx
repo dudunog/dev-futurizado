@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { BannerForm } from "@/components/admin/banners/banner-form";
+import { BannerAbSettings } from "@/components/admin/banners/banner-ab-settings";
 
 import { prisma } from "@/lib/prisma";
 
@@ -13,6 +14,13 @@ async function getBanner(id: string) {
   try {
     const banner = await prisma.banner.findUnique({
       where: { id },
+      include: {
+        abTestVariant: {
+          include: {
+            testGroup: true,
+          },
+        },
+      },
     });
     return banner;
   } catch (_) {
@@ -56,28 +64,41 @@ export default async function EditBannerPage({ params }: Props) {
           </p>
         </div>
 
-        <div className="rounded-lg border bg-card shadow-sm p-6">
-          <BannerForm
-            mode="edit"
-            bannerId={id}
-            initialData={{
-              ...banner,
-              imageAlt: banner.imageAlt ?? undefined,
-              startDate: banner.startDate
-                ? banner.startDate.toISOString().split("T")[0]
-                : undefined,
-              endDate: banner.endDate
-                ? banner.endDate.toISOString().split("T")[0]
-                : undefined,
-              startTime: banner.startTime ?? undefined,
-              endTime: banner.endTime ?? undefined,
-              clickUrl: banner.clickUrl ?? undefined,
-              displayDuration: banner.displayDuration ?? undefined,
-              animationType:
-                (banner.animationType as "fade" | "slide" | "bounce" | null) ??
-                undefined,
-            }}
-          />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <div className="rounded-lg border bg-card shadow-sm p-6">
+              <BannerForm
+                mode="edit"
+                bannerId={id}
+                initialData={{
+                  ...banner,
+                  imageAlt: banner.imageAlt ?? undefined,
+                  startDate: banner.startDate
+                    ? banner.startDate.toISOString().split("T")[0]
+                    : undefined,
+                  endDate: banner.endDate
+                    ? banner.endDate.toISOString().split("T")[0]
+                    : undefined,
+                  startTime: banner.startTime ?? undefined,
+                  endTime: banner.endTime ?? undefined,
+                  clickUrl: banner.clickUrl ?? undefined,
+                  displayDuration: banner.displayDuration ?? undefined,
+                  animationType:
+                    (banner.animationType as
+                      | "fade"
+                      | "slide"
+                      | "bounce"
+                      | null) ?? undefined,
+                }}
+              />
+            </div>
+          </div>
+          <div>
+            <BannerAbSettings
+              bannerId={id}
+              initialVariant={banner.abTestVariant}
+            />
+          </div>
         </div>
       </div>
     </div>

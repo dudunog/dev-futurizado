@@ -5,7 +5,7 @@ import Image from "next/image";
 
 import { cn } from "@/lib/utils";
 
-type BannerPreviewProps = {
+type Props = {
   imageUrl?: string;
   imageAlt?: string;
   clickUrl?: string;
@@ -19,7 +19,7 @@ export function BannerPreview({
   clickUrl,
   animationType,
   displayDuration,
-}: BannerPreviewProps) {
+}: Props) {
   const animationClass = useMemo(() => {
     if (!animationType) return "animate-fade-in";
     switch (animationType) {

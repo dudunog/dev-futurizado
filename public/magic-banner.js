@@ -23,9 +23,17 @@
 
   async function fetchBanner(url) {
     try {
-      const apiUrl = `${
+      const currentUrl = new URL(window.location.href);
+      const testVariant = currentUrl.searchParams.get("testVariant");
+
+      let apiUrl = `${
         CONFIG.apiBaseUrl
       }/api/banners/query?url=${encodeURIComponent(url)}`;
+
+      if (testVariant) {
+        apiUrl += `&testVariant=${encodeURIComponent(testVariant)}`;
+      }
+
       const response = await fetch(apiUrl);
 
       if (!response.ok) {

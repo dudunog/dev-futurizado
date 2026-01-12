@@ -41,8 +41,13 @@ export default async function proxy(request: NextRequest) {
 
   const path = request.nextUrl.pathname;
 
+  const notProtectedApiRoutes = [
+    "/api/banners/query",
+    "/api/banners/analytics",
+  ];
+
   const isProtectedApiRoute =
-    path.startsWith("/api/banners") && !path.startsWith("/api/banners/query");
+    path.startsWith("/api/banners") && !notProtectedApiRoutes.includes(path);
 
   if (isProtectedApiRoute && !user) {
     return NextResponse.json(

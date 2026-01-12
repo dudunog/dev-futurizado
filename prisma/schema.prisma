@@ -31,10 +31,63 @@ model Banner {
   createdAt       DateTime  @default(now()) @map("created_at")
   updatedAt       DateTime  @updatedAt @map("updated_at")
 
+  abTestVariant AbTestVariant?
+  analytics     BannerAnalytics[]
+
   @@index([targetUrl], name: "idx_banners_target_url")
   @@index([isActive], name: "idx_banners_active")
   @@index([startDate, endDate], name: "idx_banners_date")
   @@index([startTime, endTime], name: "idx_banners_time")
   @@index([priority], name: "idx_banners_priority")
   @@map("banners")
+}
+
+model AbTestGroup {
+  id          String   @id @default(uuid())
+  name        String   @db.Text
+  description String?  @db.Text
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  variants AbTestVariant[]
+
+  @@index([isActive], name: "idx_ab_test_group_active")
+  @@map("ab_test_groups")
+}
+
+model AbTestVariant {
+  id           String   @id @default(uuid())
+  bannerId     String   @unique @map("banner_id")
+  testGroupId  String   @map("test_group_id")
+  variant      String   @db.Text
+  trafficSplit Int      @default(50) @map("traffic_split")
+  isControl    Boolean  @default(false) @map("is_control")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  banner    Banner      @relation(fields: [bannerId], references: [id], onDelete: Cascade)
+  testGroup AbTestGroup @relation(fields: [testGroupId], references: [id], onDelete: Cascade)
+
+  @@index([testGroupId], name: "idx_ab_test_variant_group")
+  @@index([variant], name: "idx_ab_test_variant_name")
+  @@map("ab_test_variants")
+}
+
+model BannerAnalytics {
+  id        String   @id @default(uuid())
+  bannerId  String   @map("banner_id")
+  eventType String   @map("event_type")
+  sessionId String?  @map("session_id") @db.Text
+  userId    String?  @map("user_id") @db.Text
+  userAgent String?  @map("user_agent") @db.Text
+  referrer  String?  @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+
+  banner Banner @relation(fields: [bannerId], references: [id], onDelete: Cascade)
+
+  @@index([bannerId], name: "idx_analytics_banner")
+  @@index([eventType], name: "idx_analytics_event")
+  @@index([createdAt], name: "idx_analytics_date")
+  @@map("banner_analytics")
 }

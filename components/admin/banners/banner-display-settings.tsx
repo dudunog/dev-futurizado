@@ -3,6 +3,7 @@
 import { Control, FieldValues, Path } from "react-hook-form";
 
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import {
   FormControl,
   FormDescription,
@@ -19,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-type BannerDisplaySettingsProps<
+type Props<
   TFieldValues extends FieldValues = FieldValues
 > = {
   control: Control<TFieldValues>;
@@ -27,7 +28,7 @@ type BannerDisplaySettingsProps<
 
 export function BannerDisplaySettings<
   TFieldValues extends FieldValues = FieldValues
->({ control }: BannerDisplaySettingsProps<TFieldValues>) {
+>({ control }: Props<TFieldValues>) {
   return (
     <div className="space-y-4">
       <h2 className="text-lg font-semibold">Configurações de Exibição</h2>
@@ -162,12 +163,7 @@ export function BannerDisplaySettings<
               </FormDescription>
             </div>
             <FormControl>
-              <input
-                type="checkbox"
-                checked={field.value}
-                onChange={(e) => field.onChange(e.target.checked)}
-                className="h-5 w-5 rounded border-input cursor-pointer"
-              />
+              <Switch checked={field.value} onCheckedChange={field.onChange} />
             </FormControl>
           </FormItem>
         )}

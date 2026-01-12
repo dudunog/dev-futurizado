@@ -1,3 +1,5 @@
+import type { AbTestGroup, AbTestVariant } from "./ab-test";
+
 export type Banner = {
   id: string;
   targetUrl: string;
@@ -15,4 +17,5 @@ export type Banner = {
   priority: number;
   createdAt: Date;
   updatedAt: Date;
+  abTestVariant?: (AbTestVariant & { testGroup: AbTestGroup }) | null;
 };

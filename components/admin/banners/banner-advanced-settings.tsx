@@ -18,15 +18,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-type BannerAdvancedSettingsProps<
-  TFieldValues extends FieldValues = FieldValues
-> = {
+type Props<TFieldValues extends FieldValues = FieldValues> = {
   control: Control<TFieldValues>;
 };
 
 export function BannerAdvancedSettings<
   TFieldValues extends FieldValues = FieldValues
->({ control }: BannerAdvancedSettingsProps<TFieldValues>) {
+>({ control }: Props<TFieldValues>) {
   return (
     <div className="space-y-4">
       <h2 className="text-lg font-semibold">Configurações Avançadas</h2>

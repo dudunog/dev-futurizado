@@ -34,9 +34,11 @@ type Props = {
 function SortableBannerItem({
   banner,
   onDelete,
+  onToggleActive,
 }: {
   banner: Banner;
   onDelete?: (id: string) => void;
+  onToggleActive?: (id: string, isActive: boolean) => void;
 }) {
   const {
     attributes,
@@ -63,6 +65,7 @@ function SortableBannerItem({
         <BannerCard
           banner={banner}
           onDelete={onDelete}
+          onToggleActive={onToggleActive}
           attributes={attributes}
           listeners={listeners}
         />
@@ -74,6 +77,14 @@ function SortableBannerItem({
 export function BannerList({ banners, onReorder, onDelete }: Props) {
   const [items, setItems] = useState<Banner[]>(banners);
   const [isReordering, setIsReordering] = useState(false);
+
+  const handleToggleActive = (id: string, isActive: boolean) => {
+    setItems((prev) =>
+      prev.map((banner) =>
+        banner.id === id ? { ...banner, isActive } : banner
+      )
+    );
+  };
 
   useEffect(() => {
     if (!isReordering) {
@@ -151,6 +162,7 @@ export function BannerList({ banners, onReorder, onDelete }: Props) {
               key={banner.id}
               banner={banner}
               onDelete={onDelete}
+              onToggleActive={handleToggleActive}
             />
           ))}
         </div>
