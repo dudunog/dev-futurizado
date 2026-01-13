@@ -68,7 +68,7 @@ export function AbTestVariantCard({ variant }: Props) {
           <div className="pt-4 border-t">
             <Button variant="outline" size="sm" asChild>
               <Link href={`/admin/banners/${variant.bannerId}`}>
-                Ir para detalhes do banner
+                Ver detalhes do banner
               </Link>
             </Button>
           </div>

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
 
+import { baseUrl } from "@/lib/constants/api";
 import { AbTestStatsHeader } from "@/components/admin/ab-tests/ab-test-stats-header";
 import { AbTestStatsOverview } from "@/components/admin/ab-tests/ab-test-stats-overview";
 import { AbTestBestVariant } from "@/components/admin/ab-tests/ab-test-best-variant";
@@ -14,11 +16,11 @@ type Props = {
 
 async function getTestGroupStats(testGroupId: string) {
   try {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_APP_URL ||
-      (process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : "http://localhost:3000");
+    const cookieStore = await cookies();
+    const cookieHeader = cookieStore
+      .getAll()
+      .map((cookie) => `${cookie.name}=${cookie.value}`)
+      .join("; ");
 
     const response = await fetch(
       `${baseUrl}/api/ab-test-groups/${testGroupId}/stats`,
@@ -26,6 +28,7 @@ async function getTestGroupStats(testGroupId: string) {
         cache: "no-store",
         headers: {
           "Content-Type": "application/json",
+          Cookie: cookieHeader,
         },
       }
     );

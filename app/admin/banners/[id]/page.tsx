@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
 
+import { baseUrl } from "@/lib/constants/api";
 import { BannerForm } from "@/components/admin/banners/banner-form";
 import { BannerAbSettings } from "@/components/admin/banners/banner-ab-settings";
 
@@ -12,16 +14,17 @@ type Props = {
 
 async function getBanner(id: string) {
   try {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_APP_URL ||
-      (process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : "http://localhost:3000");
+    const cookieStore = await cookies();
+    const cookieHeader = cookieStore
+      .getAll()
+      .map((cookie) => `${cookie.name}=${cookie.value}`)
+      .join("; ");
 
-    const response = await fetch(`${baseUrl}/api/banners/${id}/get`, {
+    const response = await fetch(`${baseUrl}/api/banners/${id}`, {
       cache: "no-store",
       headers: {
         "Content-Type": "application/json",
+        Cookie: cookieHeader,
       },
     });
 
@@ -33,6 +36,7 @@ async function getBanner(id: string) {
     }
 
     const data = await response.json();
+    console.log("data:", data);
     return data;
   } catch (error) {
     console.error("Error fetching banner:", error);
